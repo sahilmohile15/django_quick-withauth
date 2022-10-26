@@ -1,0 +1,8 @@
+.mainContent {
+    display: 'flex';
+    flex: 1;
+    flex-direction: 'column';
+    gap: 20;
+    height: 'max-content';
+    min-height: "100%";
+}
