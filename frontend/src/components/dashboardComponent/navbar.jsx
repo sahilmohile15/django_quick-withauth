@@ -8,8 +8,8 @@ export const DrawerItems = [
         url : "/"
     },
     {
-        name : 'Subject Add',
+        name : 'Add Progression Ladder',
         icon : <TitleTwoToneIcon />,
-        url : "/subject-add"
+        url : "/add-pl"
     },
 ]

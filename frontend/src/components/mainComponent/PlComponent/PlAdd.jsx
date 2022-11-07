@@ -19,9 +19,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
-import "./plAdd.css";
+import "./pl.css";
 
-export default function SubjectAdd() {
+export default function PLAdd() {
   return (
     <div
       style={{

@@ -28,7 +28,8 @@ import Menu from '@mui/material/Menu';
 
 import { DrawerItems } from "./navbar";
 
-import SubjectAdd from "../mainComponent/subjectAdd";
+import PLAdd from "../mainComponent/PlComponent/PlAdd";
+import HomePage from "./home.jsx";
 import { Card, Paper } from "@mui/material";
 
 
@@ -233,8 +234,12 @@ export default function Dashboard(){
       <Box component="main" sx={{ flexGrow: 1, p:3 }}>
         <DrawerHeader />
         <Paper className="mainContent" style={{display:'flex', flex:1, flexDirection:'column', gap:20, height:'max-content', minHeight : "100%"}}>
+            
             <Routes>
-                <Route exact="false" path="/subject-add" element={ <SubjectAdd /> } />
+                <Route exact="true" path="/" element={ <HomePage /> } />
+
+                <Route exact="false" path="/add-pl" element={ <PLAdd /> } />
+                <Route exact="false" path="/add-pl" element={ <PLAdd /> } />
             </Routes>
             {/* <Card style={{display:'flex', flex:1, flexDirection:'column', gap:20, height:'max-content', minHeight : "100%"}}>
             </Card> */}
