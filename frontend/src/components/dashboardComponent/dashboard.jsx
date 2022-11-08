@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter, NavLink, renderMatches, Route, Routes } from "react-router-dom";
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -25,15 +25,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Menu from '@mui/material/Menu';
+import axios from "axios";
+import { useNavigate } from "react-router";
+
 
 import { DrawerItems } from "./navbar";
 
 import PLAdd from "../mainComponent/PlComponent/PlAdd";
 import HomePage from "./home.jsx";
 import { Card, Paper } from "@mui/material";
+import { url } from "../../globalurl";
 
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const drawerWidth = 240;
 
 
@@ -102,14 +105,42 @@ const openedMixin = (theme) => ({
     }),
   );
 
-export default function Dashboard(){
-    const theme = useTheme();
+export default function Dashboard(props){
+  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(false);
+
+  useEffect(()=>{
+    handleLoginCheck()
+  }, [])
+
+  const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
+
+  const handleLoginCheck = () => {
+    axios({
+        url : `${url}dj-rest-auth/user/`,
+        method : 'GET',
+        headers : {
+            'Authorization': "Bearer "+ localStorage.getItem('access-token')
+        }
+    }).then((res) => {
+        if (res.status === 200) {
+            if (res.data.isAdmin) {
+                this.setState({role : "Admin"})
+            } else if (res.data.isStaff) {
+                this.setState({role : "Staff"})
+            }
+        } else {
+          navigate('/login')
+        }
+    }).catch((err) => {
+      navigate('/login')
+    })
+  }
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -122,6 +153,36 @@ export default function Dashboard(){
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  // function to handle user Logout
+
+  const handleLogout = () => {
+    axios({
+        method : "GET",
+        headers : {
+            "Authorization" : `Bearer ${localStorage.getItem('access-token')}`
+        },
+        url : `${url}dj-rest-auth/logout/`
+    }).then((res) => {
+        if (res.status === 200) {
+            localStorage.removeItem('access-token')
+            localStorage.removeItem('refresh-token')
+            localStorage.removeItem('uName')
+            localStorage.removeItem('uId')
+            localStorage.removeItem('type')
+            props.setIsLogged(false)
+            navigate('/login')
+        }
+    })
+    .catch((res) => {
+        localStorage.removeItem('access-token')
+        localStorage.removeItem('refresh-token')
+        localStorage.removeItem('uName')
+        props.setIsLogged(false)
+        navigate('/login')
+    })
+    
+}
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -170,11 +231,15 @@ export default function Dashboard(){
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">Change-Password</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => {handleCloseUserMenu(); handleLogout();}}>
+                  <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
